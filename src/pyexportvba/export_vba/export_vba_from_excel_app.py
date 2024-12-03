@@ -4,10 +4,13 @@ import os
 import win32com.client
 
 _logger = logging.getLogger(__name__)
-_sub_dir_name = {
+
+UNKNOWN_TYPE = "Unknown"
+TYPE_NAME_MAP = {
     1: "Modules",
     2: "Class Modules",
     3: "Forms",
+    11: "ActiveX Designer",
     100: "Microsoft Excel Objects",
 }
 
@@ -30,6 +33,7 @@ def export_vba_from_excel_app(output_path: str) -> None:
 
         for vb_comp in vb_project.VBComponents:
 
+            vb_comp_type = TYPE_NAME_MAP.get(vb_comp.Type, UNKNOWN_TYPE)
             vb_comp_name = vb_comp.name
 
             vb_comp_count = vb_comp.CodeModule.CountOfLines
@@ -40,7 +44,7 @@ def export_vba_from_excel_app(output_path: str) -> None:
 
             vb_comp_dir = os.path.join(
                 vb_project_dir,
-                _sub_dir_name[vb_comp.Type],
+                vb_comp_type,
             )
 
             os.makedirs(vb_comp_dir, exist_ok=True)
