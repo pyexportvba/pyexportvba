@@ -5,7 +5,7 @@ from pprint import pformat
 from typing import Optional, Tuple
 
 from .arguments import process_arguments
-from .export_vba import export_vba
+from .export_vba import export_vba_from_excel_app
 
 
 def main(args: Optional[Tuple[str, ...]] = None) -> int:
@@ -34,7 +34,7 @@ def main(args: Optional[Tuple[str, ...]] = None) -> int:
 
     logger.info("using output path %s", p_args.output_dir)
 
-    export_vba(p_args.output_dir)
+    export_vba_from_excel_app(p_args.output_dir)
 
     return 0
 

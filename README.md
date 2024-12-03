@@ -7,7 +7,8 @@
 [![Downloads](https://static.pepy.tech/personalized-badge/pyexportvba?period=month&units=international_system&left_color=black&right_color=orange&left_text=Month)](https://pepy.tech/project/pyexportvba)
 [![Downloads](https://static.pepy.tech/personalized-badge/pyexportvba?period=total&units=international_system&left_color=black&right_color=orange&left_text=Total)](https://pepy.tech/project/pyexportvba)
 
-`pyexportvba` is available on PyPI and can be installed with
+A python package to export VBA code embedded in Excel files to separate BAS files.
+`pyexportvba` is available on PyPI and can be installed with:
 
     pip install pyexportvba
 
@@ -53,7 +54,3 @@ Once you have created your virtual environment and made sure it is active in you
 This should all the dependencies you need for developing into the library and also allow you to run the unit tests:
 
     pytest
-
-### Debugging
-
- WIP
