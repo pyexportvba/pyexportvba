@@ -3,16 +3,10 @@ import os
 
 import win32com.client
 
-_logger = logging.getLogger(__name__)
+from .get_vb_comp_code import get_vb_comp_code
+from .get_vb_comp_paths import get_vb_comp_paths
 
-UNKNOWN_TYPE = "Unknown"
-TYPE_NAME_MAP = {
-    1: "Modules",
-    2: "Class Modules",
-    3: "Forms",
-    11: "ActiveX Designer",
-    100: "Microsoft Excel Objects",
-}
+_logger = logging.getLogger(__name__)
 
 
 def export_vba_from_excel_app(output_path: str) -> None:
@@ -33,36 +27,34 @@ def export_vba_from_excel_app(output_path: str) -> None:
 
         for vb_comp in vb_project.VBComponents:
 
-            vb_comp_type = TYPE_NAME_MAP.get(vb_comp.Type, UNKNOWN_TYPE)
-            vb_comp_name = vb_comp.name
+            (
+                vb_comp_dir,
+                vb_comp_file_path,
+            ) = get_vb_comp_paths(
+                vb_project_dir,
+                vb_comp,
+            )
 
-            vb_comp_count = vb_comp.CodeModule.CountOfLines
+            code_str = get_vb_comp_code(vb_comp)
 
-            if vb_comp_count == 0:
+            if code_str is None:
+                _logger.warning(
+                    '  ignoring empty "%s"',
+                    vb_comp_file_path,
+                )
 
                 continue
 
-            vb_comp_dir = os.path.join(
-                vb_project_dir,
-                vb_comp_type,
+            _logger.info(
+                '  exporting "%s"',
+                vb_comp_file_path,
             )
 
             os.makedirs(vb_comp_dir, exist_ok=True)
-
-            vb_comp_file_path = os.path.join(
-                vb_comp_dir,
-                vb_comp_name + ".bas",
-            )
-
-            _logger.info(
-                '  writing "%s"',
-                vb_comp_file_path,
-            )
 
             with open(
                 vb_comp_file_path,
                 "w",
                 encoding="utf-8",
             ) as f:
-
-                f.write(vb_comp.CodeModule.Lines(1, vb_comp_count))
+                f.write(code_str)
